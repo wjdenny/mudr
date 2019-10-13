@@ -1,7 +1,7 @@
 {
-  "name": "node-mud",
+  "name": "mudr",
   "version": "1.0.0",
-  "description": "a node-based MUD game engine",
+  "description": "a flexible MUD game engine based on Node.js",
   "main": "./src/Engine.js",
   "scripts": {
     "start": "nodemon --exec \"node ./src/app\"",
@@ -10,7 +10,7 @@
     "debug": "node --inspect ./src/app.mjs"
   },
   "author": "Will Denny <will@wjdenny.com>",
-  "license": "UNLICENSED",
+  "license": "GPL3.0",
   "dependencies": {
     "iso-639-1": "^2.1.0",
     "winston": "^3.2.1"
