@@ -1,0 +1,25 @@
+{
+  "name": "node-mud",
+  "version": "1.0.0",
+  "description": "a node-based MUD game engine",
+  "main": "./src/Engine.js",
+  "scripts": {
+    "start": "nodemon --exec \"node ./src/app\"",
+    "test": "nodemon --exec \"mocha --ui tdd ./src/tests\"",
+    "docs": "nodemon --exec \"rm -rf docs && docco ./src/*.js\"",
+    "debug": "node --inspect ./src/app.mjs"
+  },
+  "author": "Will Denny <will@wjdenny.com>",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "iso-639-1": "^2.1.0",
+    "winston": "^3.2.1"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "docco": "^0.8.0",
+    "mocha": "^6.2.0",
+    "nodemon": "^1.19.2",
+    "sinon": "^7.5.0"
+  }
+}
