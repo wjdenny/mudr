@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Command.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="Auth.html">
+                  ./Auth.js
+                </a>
+              
+                
+                <a class="source" href="Client.html">
+                  ./Client.js
+                </a>
+              
+                
+                <a class="source" href="Command.html">
+                  ./Command.js
+                </a>
+              
+                
+                <a class="source" href="DefaultLogger.html">
+                  ./DefaultLogger.js
+                </a>
+              
+                
+                <a class="source" href="Engine.html">
+                  ./Engine.js
+                </a>
+              
+                
+                <a class="source" href="Localization.html">
+                  ./Localization.js
+                </a>
+              
+                
+                <a class="source" href="Room.html">
+                  ./Room.js
+                </a>
+              
+                
+                <a class="source" href="RoomExit.html">
+                  ./RoomExit.js
+                </a>
+              
+                
+                <a class="source" href="User.html">
+                  ./User.js
+                </a>
+              
+                
+                <a class="source" href="app.html">
+                  ./app.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>Command.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Command</span> </span>{ 
+    <span class="hljs-keyword">constructor</span>({ name, short, long, fn } = {}) { 
+        <span class="hljs-keyword">this</span>.name = name; 
+        <span class="hljs-keyword">this</span>.short = short;
+        <span class="hljs-keyword">this</span>.long = long; 
+        <span class="hljs-keyword">this</span>.fn = fn; 
+    }</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>RegExp to use for tokenizing strings. This will take a string and group words separated by spaces but allow for single quotes to include spaces into one word.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">static</span> RE_TOKENIZER = <span class="hljs-regexp">/'[^']*'|[^ ]+/g</span>
+    <span class="hljs-keyword">static</span> RE_COMMAND_SEPARATOR = <span class="hljs-regexp">/\s*[;\n]\s*/</span>
+
+    <span class="hljs-keyword">static</span> defs = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Map</span>();
+    <span class="hljs-keyword">static</span> <span class="hljs-keyword">get</span> list() { <span class="hljs-keyword">return</span> <span class="hljs-built_in">Array</span>.from(Command.defs.keys()) }
+    <span class="hljs-keyword">static</span> clean(input) { <span class="hljs-keyword">return</span> input.replace(<span class="hljs-regexp">/ +/</span>, <span class="hljs-string">' '</span>).replace(<span class="hljs-regexp">/\s$/</span>, <span class="hljs-string">''</span>) }
+    <span class="hljs-keyword">static</span> tokenize(input) { <span class="hljs-keyword">return</span> input.split(Command.RE_COMMAND_SEPARATOR).map(<span class="hljs-function"><span class="hljs-params">i</span> =&gt;</span> i.match(Command.RE_TOKENIZER)) }
+    <span class="hljs-keyword">static</span> autocomplete(input, list) { 
+        <span class="hljs-keyword">let</span> re = <span class="hljs-keyword">new</span> <span class="hljs-built_in">RegExp</span>(<span class="hljs-string">`^<span class="hljs-subst">${input}</span>`</span>); 
+        <span class="hljs-keyword">if</span> (list.includes(input)) { <span class="hljs-keyword">return</span> input }
+        <span class="hljs-keyword">else</span> { <span class="hljs-keyword">return</span> list.filter(<span class="hljs-function"><span class="hljs-params">n</span> =&gt;</span> re.test(n))[<span class="hljs-number">0</span>] }
+    }
+
+    <span class="hljs-keyword">static</span> parse(input) {
+        input = Command.tokenize(Command.clean(input));
+        input = input.filter(<span class="hljs-function"><span class="hljs-params">e</span> =&gt;</span> e !== <span class="hljs-literal">null</span> )
+        input = input.map(<span class="hljs-function"><span class="hljs-params">e</span> =&gt;</span> { <span class="hljs-keyword">return</span> { <span class="hljs-attr">command</span>: e[<span class="hljs-number">0</span>], <span class="hljs-attr">args</span>: e.slice(<span class="hljs-number">1</span>) }})
+        input = input.map(<span class="hljs-function"><span class="hljs-params">e</span> =&gt;</span> { e.command = Command.autocomplete(e.command, Command.list); <span class="hljs-keyword">return</span> e })
+        input = input.map(<span class="hljs-function"><span class="hljs-params">e</span> =&gt;</span> { e.command = e.command ? Command.defs.get(e.command) : UNKNOWN_COMMAND; <span class="hljs-keyword">return</span> e })
+        <span class="hljs-keyword">return</span> input;
+    }
+}
+
+<span class="hljs-keyword">const</span> UNKNOWN_COMMAND = <span class="hljs-keyword">new</span> Command({ <span class="hljs-attr">short</span>: <span class="hljs-string">'Huh?'</span>, <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">{ client }</span>) =&gt;</span> { client.send(<span class="hljs-string">'Huh!?'</span>) } });
+
+Command.defs.set(<span class="hljs-string">'quit'</span>, <span class="hljs-keyword">new</span> Command({ 
+    <span class="hljs-attr">name</span>: <span class="hljs-string">'quit'</span>,
+    <span class="hljs-attr">short</span>: <span class="hljs-string">'disconnects from the server'</span>,
+    <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">{ client }</span>) =&gt;</span> { client.disconnect(<span class="hljs-string">'Good-bye!'</span>) },
+}));
+
+Command.defs.set(<span class="hljs-string">'look'</span>, <span class="hljs-keyword">new</span> Command({
+    <span class="hljs-attr">name</span>: <span class="hljs-string">'look'</span>,
+    <span class="hljs-attr">short</span>: <span class="hljs-string">'look at something or someone'</span>,
+    <span class="hljs-attr">fn</span>: <span class="hljs-function">(<span class="hljs-params">{ client, args }</span>) =&gt;</span> { <span class="hljs-keyword">let</span> target = args[<span class="hljs-number">0</span>]; client.send(<span class="hljs-string">`You look at <span class="hljs-subst">${target}</span>.`</span>) }
+}));
+
+<span class="hljs-built_in">module</span>.exports = { Command, UNKNOWN_COMMAND }</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

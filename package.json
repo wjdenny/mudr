@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon --exec \"node ./src/app\"",
     "test": "nodemon --exec \"mocha --ui tdd ./src/tests\"",
-    "docs": "nodemon --exec \"rm -rf docs && docco ./src/*.js\"",
+    "docs": "rm -rf docs && (cd ./src && docco --output ../docs ./*.js)",
     "debug": "node --inspect ./src/app.mjs"
   },
   "author": "Will Denny <will@wjdenny.com>",

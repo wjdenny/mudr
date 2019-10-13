@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Room.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="Auth.html">
+                  ./Auth.js
+                </a>
+              
+                
+                <a class="source" href="Client.html">
+                  ./Client.js
+                </a>
+              
+                
+                <a class="source" href="Command.html">
+                  ./Command.js
+                </a>
+              
+                
+                <a class="source" href="DefaultLogger.html">
+                  ./DefaultLogger.js
+                </a>
+              
+                
+                <a class="source" href="Engine.html">
+                  ./Engine.js
+                </a>
+              
+                
+                <a class="source" href="Localization.html">
+                  ./Localization.js
+                </a>
+              
+                
+                <a class="source" href="Room.html">
+                  ./Room.js
+                </a>
+              
+                
+                <a class="source" href="RoomExit.html">
+                  ./RoomExit.js
+                </a>
+              
+                
+                <a class="source" href="User.html">
+                  ./User.js
+                </a>
+              
+                
+                <a class="source" href="app.html">
+                  ./app.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>Room.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> EventEmitter = <span class="hljs-built_in">require</span>(<span class="hljs-string">'events'</span>).EventEmitter;
+<span class="hljs-function"><span class="hljs-keyword">function</span>* <span class="hljs-title">RoomNumberGenerator</span>(<span class="hljs-params"></span>) </span>{ <span class="hljs-keyword">let</span> n = <span class="hljs-number">0</span>; <span class="hljs-keyword">while</span> (<span class="hljs-literal">true</span>) { <span class="hljs-keyword">yield</span> n++ } }
+<span class="hljs-keyword">let</span> roomNumberGenerator = RoomNumberGenerator();
+<span class="hljs-keyword">let</span> RoomExit = <span class="hljs-built_in">require</span>(<span class="hljs-string">'./RoomExit.js'</span>)
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Room</span> </span>{
+    <span class="hljs-keyword">static</span> names = [];
+
+    <span class="hljs-keyword">constructor</span>(options) {
+        <span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> options !== <span class="hljs-string">'object'</span>) { <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Constructor argument must be an object.'</span>)}
+        <span class="hljs-keyword">if</span> (!options.title) { <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Room objects must have a title.'</span> )}
+        <span class="hljs-keyword">if</span> (!options.description) { <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">Error</span>(<span class="hljs-string">'Room objects must have a description.'</span> )}
+
+        <span class="hljs-keyword">let</span> defaults = {
+            <span class="hljs-attr">id</span>: <span class="hljs-literal">null</span>,
+            <span class="hljs-attr">name</span>: <span class="hljs-string">'room'</span>,
+            <span class="hljs-attr">title</span>: <span class="hljs-string">'An empty room'</span>,
+            <span class="hljs-attr">description</span>: <span class="hljs-string">'You are floating in a vast empty space. You\'re not even sure if you\'re still alive.'</span>,
+            <span class="hljs-attr">area</span>: <span class="hljs-string">'none'</span>,
+            <span class="hljs-attr">exits</span>: <span class="hljs-keyword">new</span> <span class="hljs-built_in">Map</span>()
+        }
+
+        options = { ...defaults, ...options }
+
+        <span class="hljs-keyword">this</span>.description = options.description;
+        <span class="hljs-keyword">this</span>.area = options.area;
+
+        <span class="hljs-keyword">this</span>.id = Room.assignRoomNumber();
+        <span class="hljs-keyword">this</span>.name = options.name;
+        <span class="hljs-keyword">this</span>.exits = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Map</span>();
+
+        <span class="hljs-keyword">this</span>.eventEmitter = <span class="hljs-keyword">new</span> EventEmitter();
+    }
+
+    <span class="hljs-keyword">static</span> assignRoomNumber() { <span class="hljs-keyword">return</span> roomNumberGenerator.next().value }
+    <span class="hljs-keyword">get</span> address() { <span class="hljs-keyword">return</span> <span class="hljs-string">`<span class="hljs-subst">${<span class="hljs-keyword">this</span>.area}</span>/<span class="hljs-subst">${<span class="hljs-keyword">this</span>.name || <span class="hljs-keyword">this</span>.id}</span>`</span> }
+
+    toString() { <span class="hljs-keyword">return</span> <span class="hljs-built_in">JSON</span>.stringify(<span class="hljs-keyword">this</span>); }
+
+    createExit(options) { 
+        <span class="hljs-keyword">let</span> exit = <span class="hljs-keyword">new</span> RoomExit({ options });
+        <span class="hljs-keyword">this</span>.exits.set(exit.direction, exit);
+        <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>;
+    }
+    
+    onEnter(listener) { <span class="hljs-keyword">this</span>.eventEmitter.on(<span class="hljs-string">'enter'</span>, listener); <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>; }
+    onLeave(listener) { <span class="hljs-keyword">this</span>.eventEmitter.on(<span class="hljs-string">'leave'</span>, listener); <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>; }
+    onTick(listener) { <span class="hljs-keyword">this</span>.eventEmitter.on(<span class="hljs-string">'tick'</span>, listener); <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>; }
+    onAction(listener) { <span class="hljs-keyword">this</span>.eventEmitter.on(<span class="hljs-string">'action'</span>, listener); <span class="hljs-keyword">return</span> <span class="hljs-keyword">this</span>; }
+
+    emitEnter(creature, direction) { <span class="hljs-keyword">this</span>.eventEmitter.emit(<span class="hljs-string">'enter'</span>, creature, direction) }
+    emitLeave(creature, direction) { <span class="hljs-keyword">this</span>.eventEmitter.emit(<span class="hljs-string">'leave'</span>, creature, direction) }
+    emitTick(tick) { <span class="hljs-keyword">this</span>.eventEmitter.emit(<span class="hljs-string">'tick'</span>, tick) }
+    emitAction(action) { <span class="hljs-keyword">this</span>.eventEmitter.emit(<span class="hljs-string">'action'</span>, action) }
+}
+
+<span class="hljs-built_in">module</span>.exports = Room;</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>

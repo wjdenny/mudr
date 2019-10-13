@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>Localization.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page_wrapper">
+            <div id="jump_page">
+              
+                
+                <a class="source" href="Auth.html">
+                  ./Auth.js
+                </a>
+              
+                
+                <a class="source" href="Client.html">
+                  ./Client.js
+                </a>
+              
+                
+                <a class="source" href="Command.html">
+                  ./Command.js
+                </a>
+              
+                
+                <a class="source" href="DefaultLogger.html">
+                  ./DefaultLogger.js
+                </a>
+              
+                
+                <a class="source" href="Engine.html">
+                  ./Engine.js
+                </a>
+              
+                
+                <a class="source" href="Localization.html">
+                  ./Localization.js
+                </a>
+              
+                
+                <a class="source" href="Room.html">
+                  ./Room.js
+                </a>
+              
+                
+                <a class="source" href="RoomExit.html">
+                  ./RoomExit.js
+                </a>
+              
+                
+                <a class="source" href="User.html">
+                  ./User.js
+                </a>
+              
+                
+                <a class="source" href="app.html">
+                  ./app.js
+                </a>
+              
+            </div>
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>Localization.js</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">const</span> iso6391 = <span class="hljs-built_in">require</span>(<span class="hljs-string">'iso-639-1'</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <h2 id="strings">Strings</h2>
+<p>Define all the strings that will be used to report to the logger, console, or client. Keeping them all together makes it easier to add language support and make other changes. Soon I need to refactor and move this into it’s own module.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+<span class="hljs-keyword">const</span> Strings = {
+	<span class="hljs-attr">NEW_CONNECTION</span>:       { <span class="hljs-string">'en'</span>: <span class="hljs-function">(<span class="hljs-params">remoteHost</span>) =&gt;</span> { <span class="hljs-keyword">return</span> <span class="hljs-string">`There is a new connection to the server from <span class="hljs-subst">${remoteHost}</span>.`</span> } },
+	<span class="hljs-attr">END_CONNECTION</span>:       { <span class="hljs-string">'en'</span>: <span class="hljs-function">(<span class="hljs-params">remoteHost</span>) =&gt;</span> { <span class="hljs-keyword">return</span> <span class="hljs-string">`The connection from <span class="hljs-subst">${remoteHost}</span>' has ended.`</span> } },
+	<span class="hljs-attr">SERVER_GREETING</span>:      { <span class="hljs-string">'en'</span>: <span class="hljs-function">(<span class="hljs-params">gameTitle</span>) =&gt;</span> { <span class="hljs-keyword">return</span> <span class="hljs-string">`Welcome to <span class="hljs-subst">${gameTitle}</span>!`</span> } },
+	<span class="hljs-attr">SERVER_READY</span>:         { <span class="hljs-string">'en'</span>: <span class="hljs-function">(<span class="hljs-params">port</span>) =&gt;</span> { <span class="hljs-keyword">return</span> <span class="hljs-string">`The server is now listening on port <span class="hljs-subst">${port}</span>.`</span>} },
+	<span class="hljs-attr">E_INVALID_LANG</span>:       { <span class="hljs-string">'en'</span>: <span class="hljs-function">(<span class="hljs-params">lang</span>) =&gt;</span> { <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">TypeError</span>(<span class="hljs-string">`Localization initialized with an invalid language code (<span class="hljs-subst">${lang}</span>).`</span>) }},
+	<span class="hljs-attr">E_UNSUPPORTED_LANG</span>:   { <span class="hljs-string">'en'</span>: <span class="hljs-function">(<span class="hljs-params">lang</span>) =&gt;</span> { <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">TypeError</span>(<span class="hljs-string">`Localization doesn\'t support the selected language (<span class="hljs-subst">${lang}</span>).`</span>) }},
+	<span class="hljs-attr">E_UNSUPPORTED_STRING</span>: { <span class="hljs-string">'en'</span>: <span class="hljs-function">(<span class="hljs-params">string</span>) =&gt;</span> { <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-built_in">TypeError</span>(<span class="hljs-string">`Localization for the chosen string (<span class="hljs-subst">${string}</span>) isn\'t supported.`</span>) }}
+}
+
+<span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">lang = <span class="hljs-string">'en'</span></span>) </span>{ 
+	<span class="hljs-keyword">if</span> (<span class="hljs-keyword">typeof</span> lang !== <span class="hljs-string">'string'</span> || !iso6391.validate(lang)) { <span class="hljs-keyword">throw</span> Strings.E_INVALID_LANG[<span class="hljs-string">'en'</span>](lang) }
+
+	<span class="hljs-built_in">Object</span>.keys(Strings).forEach(<span class="hljs-function">(<span class="hljs-params">key</span>) =&gt;</span> { <span class="hljs-keyword">if</span> ( !Strings[key][lang] ) { <span class="hljs-keyword">throw</span> Strings.E_UNSUPPORED_LANG[<span class="hljs-string">'en'</span>](lang) } })
+
+	<span class="hljs-keyword">return</span> <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">key, ...args</span>) </span>{
+		<span class="hljs-keyword">if</span> ( !Strings[key] ) { <span class="hljs-keyword">throw</span> Strings.E_UNSUPPORTED_STRING[<span class="hljs-string">'en'</span>](key) }
+		<span class="hljs-keyword">else</span> { <span class="hljs-keyword">return</span> Strings[key][lang](args) }
+	}
+}</pre></div></div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
